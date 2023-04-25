@@ -6,6 +6,7 @@ from PySide2.QtCore import QObject, Qt
 class NodePalletView(QTreeView):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        self.setDragEnabled(True)
 
 
 class NodePalletModel(QStandardItemModel):
@@ -36,9 +37,14 @@ class NodePallet(QObject):
     def setupByDummy(self):
         m: NodePalletModel = self.__model
         m.clear()
-        m.setHorizontalHeaderLabels(["id", "aaa"])
-        row = [NodePalletItem("a"), NodePalletItem("b")]
-        for clmn in row:
-            clmn.setEditable(False)
-            clmn.setTextAlignment(Qt.AlignTop)
-        m.appendRow(row)
+        m.setHorizontalHeaderLabels(["id"])
+        rows = [
+            [NodePalletItem("aaaa")],
+            [NodePalletItem("bbbb")],
+            [NodePalletItem("cccc")],
+        ]
+        for row in rows:
+            for clmn in row:
+                clmn.setEditable(False)
+                clmn.setTextAlignment(Qt.AlignTop)
+            m.appendRow(row)
