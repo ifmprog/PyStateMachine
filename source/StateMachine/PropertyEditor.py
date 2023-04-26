@@ -6,6 +6,7 @@ from PySide2.QtGui import (
     QDropEvent,
 )
 from PySide2.QtCore import QObject, Qt, QMimeData, QModelIndex
+from StateMachine.PropertyDefs import SimpleState
 
 
 class PropertyEditorView(QTreeView):
@@ -19,7 +20,10 @@ class PropertyEditorModel(QStandardItemModel):
 
 
 class PropetyEditorItem(QStandardItem):
-    ...
+    def __init__(self, text: str):
+        super().__init__(text)
+        self.setEditable(False)
+        self.setTextAlignment(Qt.AlignTop)
 
 
 class PropertyEditor(QObject):
@@ -38,5 +42,9 @@ class PropertyEditor(QObject):
     def getWidget(self) -> QWidget:
         return self.__view
 
-
-
+    def setSimpleState(self, item: SimpleState):
+        m = self.__model
+        m.clear()
+        m.setHorizontalHeaderLabels(["aaa"])
+        m.appendRow([PropetyEditorItem(item.name)])
+        

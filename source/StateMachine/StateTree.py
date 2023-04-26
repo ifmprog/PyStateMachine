@@ -6,6 +6,7 @@ from PySide2.QtGui import (
     QDropEvent,
 )
 from PySide2.QtCore import QObject, Qt, QMimeData, QModelIndex, Signal, QItemSelection
+from StateMachine.PropertyDefs import SimpleState
 
 
 class StateTreeView(QTreeView):
@@ -50,11 +51,14 @@ class StateTreeModel(QStandardItemModel):
 
 
 class StateTreeItem(QStandardItem):
-    ...
+    def __init__(self, text: str):
+        super().__init__(text)
+        self.setEditable(False)
+        self.setTextAlignment(Qt.AlignTop)
 
 
 class StateTree(QObject):
-    onItemSelected = Signal()
+    onItemSelected = Signal(SimpleState)
 
     def __init__(self) -> None:
         super().__init__(None)
@@ -76,13 +80,10 @@ class StateTree(QObject):
         m: StateTreeModel = self.__model
         m.clear()
         m.setHorizontalHeaderLabels(["id"])
-        row = [StateTreeItem("a")]
-        for clmn in row:
-            clmn.setEditable(False)
-            clmn.setTextAlignment(Qt.AlignTop)
-        m.appendRow(row)
+        m.appendRow([StateTreeItem("a")])
 
     def __onChangeCurrent(self, current: QModelIndex, previous: QModelIndex):
         item = self.__model.itemFromIndex(current)
         if item:
-            print(item.text())
+            state = SimpleState(item.text())
+            self.onItemSelected.emit(state)

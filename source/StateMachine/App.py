@@ -2,6 +2,8 @@ from PySide2.QtCore import QObject, Qt
 from PySide2.QtWidgets import QApplication, QMainWindow, QTextEdit, QDockWidget
 from StateMachine.NodePallet import NodePallet
 from StateMachine.StateTree import StateTree
+from StateMachine.PropertyEditor import PropertyEditor
+from StateMachine.PropertyDefs import SimpleState
 
 
 class App(QObject):
@@ -11,6 +13,7 @@ class App(QObject):
         self.__wnd: QMainWindow = None
         self.__nodePallet: NodePallet = None
         self.__stateTree: StateTree = None
+        self.__propertyEditor: PropertyEditor = None
 
     def run(self) -> int:
         print("app begun")
@@ -28,6 +31,8 @@ class App(QObject):
         self.__nodePallet.setupByDummy()
         self.__stateTree = StateTree()
         self.__stateTree.setupByDummy()
+        self.__stateTree.onItemSelected.connect(self.__slotStateTreeOnItemSelected)
+        self.__propertyEditor = PropertyEditor()
         wnd = self.__wnd
         wnd.__c = QTextEdit(wnd)
         wnd.__l = QDockWidget("Left", wnd)
@@ -43,5 +48,9 @@ class App(QObject):
         wnd.addDockWidget(Qt.TopDockWidgetArea, wnd.__t)
         wnd.addDockWidget(Qt.BottomDockWidgetArea, wnd.__b)
         wnd.__l.setWidget(self.__nodePallet.getWidget())
+        wnd.__r.setWidget(self.__propertyEditor.getWidget())
         wnd.setWindowTitle("State Machine")
         wnd.statusBar()
+
+    def __slotStateTreeOnItemSelected(self, state: SimpleState):
+        self.__propertyEditor.setSimpleState(state)
