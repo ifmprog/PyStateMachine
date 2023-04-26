@@ -5,7 +5,7 @@ from PySide2.QtGui import (
     QDragEnterEvent,
     QDropEvent,
 )
-from PySide2.QtCore import QObject, Qt, QMimeData, QModelIndex
+from PySide2.QtCore import QObject, Qt, QMimeData, QModelIndex, Signal, QItemSelection
 
 
 class StateTreeView(QTreeView):
@@ -54,6 +54,8 @@ class StateTreeItem(QStandardItem):
 
 
 class StateTree(QObject):
+    onItemSelected = Signal()
+
     def __init__(self) -> None:
         super().__init__(None)
         self.__view: StateTreeView = None
@@ -64,6 +66,7 @@ class StateTree(QObject):
         self.__model = StateTreeModel(None)
         v = StateTreeView()
         v.setModel(self.__model)
+        v.selectionModel().currentChanged.connect(self.__onChangeCurrent)
         self.__view = v
 
     def getWidget(self) -> QWidget:
@@ -78,3 +81,8 @@ class StateTree(QObject):
             clmn.setEditable(False)
             clmn.setTextAlignment(Qt.AlignTop)
         m.appendRow(row)
+
+    def __onChangeCurrent(self, current: QModelIndex, previous: QModelIndex):
+        item = self.__model.itemFromIndex(current)
+        if item:
+            print(item.text())
