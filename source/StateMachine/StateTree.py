@@ -10,9 +10,7 @@ from StateMachine.PropertyDefs import SimpleState
 
 
 class StateTreeView(QTreeView):
-    """
-    ステートツリー.
-    """
+    """ステートツリービュー"""
 
     def __init__(self, parent=None) -> None:
         """コンストラクタ"""
@@ -22,20 +20,17 @@ class StateTreeView(QTreeView):
 
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         return super().dragEnterEvent(event)
-        # if event.mimeData().hasText():
-        #     event.accept()
 
     def dropEvent(self, event: QDropEvent) -> None:
         parent = self.indexAt(event.pos())
         if parent and parent.isValid():
             self.expand(parent)
         return super().dropEvent(event)
-        # item = event.source().itemAt(event.pos())
-        # if item:
-        #    ...
 
 
 class StateTreeModel(QStandardItemModel):
+    """ステートツリーモデル"""
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
 
@@ -51,6 +46,8 @@ class StateTreeModel(QStandardItemModel):
 
 
 class StateTreeItem(QStandardItem):
+    """ステートツリーアイテム"""
+
     def __init__(self, text: str):
         super().__init__(text)
         self.setEditable(False)
@@ -58,6 +55,9 @@ class StateTreeItem(QStandardItem):
 
 
 class StateTree(QObject):
+    """ステートツリー"""
+
+    """アイテムが選択されたときに発火"""
     onItemSelected = Signal(SimpleState)
 
     def __init__(self) -> None:

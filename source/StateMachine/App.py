@@ -28,7 +28,7 @@ class App(QObject):
 
     def __setupObjects(self):
         self.__nodePallet = NodePallet()
-        self.__nodePallet.setupByDummy()
+        self.__nodePallet.setup()
         self.__stateTree = StateTree()
         self.__stateTree.setupByDummy()
         self.__stateTree.onItemSelected.connect(self.__slotStateTreeOnItemSelected)
